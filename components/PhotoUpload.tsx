@@ -70,6 +70,14 @@ export default function PhotoUpload({ onPhotosChange }: PhotoUploadProps) {
     onPhotosChange(newPhotos);
   };
 
+  const updateCaption = (id: string, caption: string) => {
+    const newPhotos = photos.map((p) =>
+      p.id === id ? { ...p, caption } : p
+    );
+    setPhotos(newPhotos);
+    onPhotosChange(newPhotos);
+  };
+
   return (
     <div className="space-y-4">
       <div
@@ -101,26 +109,46 @@ export default function PhotoUpload({ onPhotosChange }: PhotoUploadProps) {
       </div>
 
       {photos.length > 0 && (
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {photos.map((photo) => (
-            <div key={photo.id} className="relative group">
-              <div className="relative aspect-square">
-                <Image
-                  src={photo.url}
-                  alt="Upload preview"
-                  fill
-                  className="object-cover rounded-lg"
-                />
+        <div className="space-y-6">
+          <p className="text-sm text-vintage-brown font-medium">
+            {photos.length} photo{photos.length !== 1 ? 's' : ''} uploaded. Add captions below (optional):
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {photos.map((photo, index) => (
+              <div key={photo.id} className="space-y-2">
+                <div className="relative group">
+                  <div className="relative aspect-square rounded-lg overflow-hidden bg-gray-100">
+                    <Image
+                      src={photo.url}
+                      alt={photo.caption || `Photo ${index + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => removePhoto(photo.id)}
+                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-lg"
+                    title="Remove photo"
+                  >
+                    ×
+                  </button>
+                  <div className="absolute bottom-2 left-2 bg-vintage-brown/80 text-white px-2 py-1 rounded text-xs font-medium">
+                    Photo {index + 1}
+                  </div>
+                </div>
+                <div>
+                  <input
+                    type="text"
+                    value={photo.caption || ''}
+                    onChange={(e) => updateCaption(photo.id, e.target.value)}
+                    placeholder="Add a caption (optional)"
+                    className="w-full px-3 py-2 text-sm border-2 border-vintage-sepia rounded-lg focus:outline-none focus:border-vintage-brown transition-colors bg-white placeholder:text-vintage-sepia/60"
+                  />
+                </div>
               </div>
-              <button
-                type="button"
-                onClick={() => removePhoto(photo.id)}
-                className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                ×
-              </button>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
     </div>
