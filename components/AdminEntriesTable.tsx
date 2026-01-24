@@ -16,7 +16,8 @@ export default function AdminEntriesTable({ entries: initialEntries }: AdminEntr
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const handleDelete = async (entry: ScrapbookEntry) => {
-    const confirmMessage = `Are you sure you want to delete "${entry.title}" from ${format(new Date(entry.date), 'MMM d, yyyy')}?\n\nThis action cannot be undone.`;
+    const photoCount = entry.photos.length;
+    const confirmMessage = `Are you sure you want to delete "${entry.title}" from ${format(new Date(entry.date), 'MMM d, yyyy')}?\n\nThis will also delete ${photoCount} photo${photoCount !== 1 ? 's' : ''} permanently.\n\nThis action cannot be undone.`;
 
     if (!confirm(confirmMessage)) {
       return;

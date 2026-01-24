@@ -51,8 +51,34 @@ export async function createEntry(entry: ScrapbookEntry): Promise<void> {
 
 export async function deleteEntry(date: string): Promise<void> {
   try {
+    // First, read the entry to get photo URLs
+    const entry = await getEntryByDate(date);
+
+    if (entry && entry.photos && entry.photos.length > 0) {
+      // Delete all associated photos
+      const deletePhotoPromises = entry.photos.map(async (photo) => {
+        try {
+          // Extract filename from URL (e.g., "/uploads/abc123.jpg" -> "abc123.jpg")
+          const filename = photo.url.split('/').pop();
+          if (filename) {
+            const photoPath = path.join(process.cwd(), 'public', 'uploads', filename);
+            await fs.unlink(photoPath);
+            console.log(`Deleted photo: ${filename}`);
+          }
+        } catch (photoError) {
+          // Log but don't throw - continue deleting other photos
+          console.warn(`Failed to delete photo ${photo.url}:`, photoError);
+        }
+      });
+
+      // Wait for all photo deletions to complete
+      await Promise.allSettled(deletePhotoPromises);
+    }
+
+    // Delete the entry JSON file
     const filePath = path.join(DATA_DIR, `${date}.json`);
     await fs.unlink(filePath);
+    console.log(`Deleted entry: ${date}.json`);
   } catch (error) {
     console.error(`Error deleting entry for date ${date}:`, error);
     throw error;
