@@ -48,3 +48,13 @@ export async function createEntry(entry: ScrapbookEntry): Promise<void> {
     throw error;
   }
 }
+
+export async function deleteEntry(date: string): Promise<void> {
+  try {
+    const filePath = path.join(DATA_DIR, `${date}.json`);
+    await fs.unlink(filePath);
+  } catch (error) {
+    console.error(`Error deleting entry for date ${date}:`, error);
+    throw error;
+  }
+}
