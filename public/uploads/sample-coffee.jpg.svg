@@ -1,0 +1,16 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="vintage">
+      <feColorMatrix type="matrix" values="1.2 0 0 0 0
+                                            0 1.0 0 0 0
+                                            0 0 0.8 0 0
+                                            0 0 0 1 0"/>
+    </filter>
+  </defs>
+  <rect width="800" height="600" fill="#D4C5B9"/>
+  <circle cx="400" cy="300" r="80" fill="#8B7355" opacity="0.3"/>
+  <circle cx="320" cy="280" r="60" fill="#8B7355" opacity="0.2"/>
+  <rect x="300" y="400" width="200" height="100" rx="10" fill="#5C4A3A" opacity="0.3"/>
+  <text x="400" y="320" font-family="serif" font-size="48" fill="#5C4A3A" text-anchor="middle" opacity="0.5">☕</text>
+  <text x="400" y="500" font-family="serif" font-size="24" fill="#5C4A3A" text-anchor="middle" opacity="0.4">Sample Photo</text>
+</svg>

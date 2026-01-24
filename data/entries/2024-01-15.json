@@ -1,0 +1,17 @@
+{
+  "id": "sample-entry-1",
+  "date": "2024-01-15",
+  "title": "Morning Coffee Together",
+  "description": "Started our day with coffee at our favorite corner cafe. The morning light was perfect, and we spent hours just talking about everything and nothing. These quiet moments together are what I treasure most.",
+  "photos": [
+    {
+      "id": "sample-photo-1",
+      "url": "/uploads/sample-coffee.jpg",
+      "caption": "Our favorite corner table",
+      "width": 800,
+      "height": 600
+    }
+  ],
+  "createdAt": "2024-01-15T10:30:00.000Z",
+  "updatedAt": "2024-01-15T10:30:00.000Z"
+}
