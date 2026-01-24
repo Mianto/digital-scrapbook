@@ -1,8 +1,8 @@
 import { getEntryByDate } from '@/lib/entries';
 import { format } from 'date-fns';
-import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import VintagePhotoGrid from '@/components/VintagePhotoGrid';
 
 export const dynamic = 'force-dynamic';
 
@@ -40,34 +40,17 @@ export default async function EntryPage({ params }: EntryPageProps) {
 
       <div className="container mx-auto px-4 py-12 max-w-4xl">
         {/* Photos Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-          {entry.photos.map((photo, index) => (
-            <div
-              key={photo.id}
-              className={`polaroid ${index === 0 && entry.photos.length % 2 === 1 ? 'md:col-span-2' : ''}`}
-            >
-              <div className="relative aspect-square w-full overflow-hidden bg-gray-100">
-                <Image
-                  src={photo.url}
-                  alt={photo.caption || entry.title}
-                  fill
-                  className="object-cover sepia-filter"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
-                />
-              </div>
-              {photo.caption && (
-                <p className="mt-4 text-center font-handwritten text-lg text-vintage-dark">
-                  {photo.caption}
-                </p>
-              )}
-            </div>
-          ))}
-        </div>
+        <VintagePhotoGrid photos={entry.photos} entryTitle={entry.title} />
 
         {/* Description */}
         {entry.description && (
-          <div className="bg-white/50 p-8 rounded-lg shadow-md border-2 border-vintage-sepia">
-            <p className="text-lg leading-relaxed text-vintage-dark whitespace-pre-wrap">
+          <div className="aged-paper p-8 rounded-lg shadow-md vintage-border relative overflow-hidden">
+            <div className="absolute top-2 right-2 w-12 h-12 opacity-10">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="text-vintage-brown">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              </svg>
+            </div>
+            <p className="text-lg leading-relaxed text-vintage-dark whitespace-pre-wrap relative z-10">
               {entry.description}
             </p>
           </div>

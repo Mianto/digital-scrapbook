@@ -12,10 +12,31 @@ interface EntryCardProps {
 
 export default function EntryCard({ entry }: EntryCardProps) {
   const [rotation, setRotation] = useState(0);
+  const [vintageEffects, setVintageEffects] = useState({
+    hasTopTape: false,
+    hasStain: false,
+    stainType: 1,
+    sepiaType: 'sepia-filter',
+  });
 
-  // Generate random rotation on mount
+  // Generate random rotation and vintage effects on mount
   useEffect(() => {
-    setRotation(Math.random() * 4 - 2); // Random rotation between -2 and 2 degrees
+    // More dramatic rotation for authentic polaroid look
+    setRotation(Math.random() * 8 - 4); // Random rotation between -4 and 4 degrees
+
+    // Randomly apply vintage effects
+    const effects = {
+      hasTopTape: Math.random() > 0.5, // 50% chance of tape
+      hasStain: Math.random() > 0.6, // 40% chance of stain
+      stainType: Math.random() > 0.5 ? 1 : 2,
+      sepiaType: (() => {
+        const rand = Math.random();
+        if (rand > 0.7) return 'sepia-heavy';
+        if (rand > 0.4) return 'sepia-filter';
+        return 'sepia-light';
+      })(),
+    };
+    setVintageEffects(effects);
   }, []);
 
   const displayDate = format(new Date(entry.date), 'MMMM d, yyyy');
@@ -24,21 +45,23 @@ export default function EntryCard({ entry }: EntryCardProps) {
   return (
     <Link href={`/entries/${entry.date}`}>
       <div
-        className="polaroid cursor-pointer relative"
+        className={`polaroid cursor-pointer relative ${vintageEffects.hasTopTape ? 'vintage-tape' : ''} ${
+          vintageEffects.hasStain ? `vintage-stain-${vintageEffects.stainType}` : ''
+        }`}
         style={{ transform: `rotate(${rotation}deg)` }}
       >
-        <div className="relative aspect-square w-full overflow-hidden bg-gray-100">
+        <div className="relative aspect-square w-full overflow-hidden bg-gray-100 vintage-vignette">
           {mainPhoto && (
             <Image
               src={mainPhoto.url}
               alt={entry.title}
               fill
-              className="object-cover sepia-filter"
+              className={`object-cover ${vintageEffects.sepiaType}`}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           )}
         </div>
-        <div className="mt-4 text-center">
+        <div className="mt-4 text-center relative z-10">
           <h3 className="font-handwritten text-2xl text-vintage-dark">
             {entry.title}
           </h3>

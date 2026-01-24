@@ -1,0 +1,100 @@
+{
+  "id": "c343d96d-4b59-467d-9e78-568c5023fe59",
+  "date": "2026-01-24",
+  "title": "Marriage Anniversary Date",
+  "description": "Our first marriage anniversary",
+  "photos": [
+    {
+      "id": "bced78f5-f5c8-40eb-b0cf-36d4b3724017",
+      "url": "/uploads/8b4b73c5-765c-46fa-a41b-9d17fc3ae3da.jpg",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "id": "203d5688-ed1f-4a20-aef3-936802c109e4",
+      "url": "/uploads/9f22d4e9-16fb-4f27-8654-aaf935c552b9.jpg",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "id": "9d3a8233-1f8f-410c-8dc8-d68d99b4aaca",
+      "url": "/uploads/8c3750eb-0a7b-438d-9390-09eb3c7b8424.jpg",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "id": "e279f5de-180c-4b36-b180-90616daa561a",
+      "url": "/uploads/7e532845-27b0-45d2-aa0b-52667bfdc7c1.jpg",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "id": "541d1181-730e-46eb-8824-2463fbaa09ce",
+      "url": "/uploads/9ee0790a-67fd-4fce-b66b-b8ea069950bc.jpg",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "id": "ef0e6de6-dcc8-49b9-ae97-c115961f8499",
+      "url": "/uploads/030602a5-0a6a-4169-91a9-c5ffd47625b1.jpg",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "id": "f64ca00b-8e54-4155-90cd-9f27c4f5b95b",
+      "url": "/uploads/7f654689-fbde-468c-834b-9052c5d8f503.jpg",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "id": "a0d64388-8859-446f-86c0-62a7d1c23971",
+      "url": "/uploads/066bce5d-3f4f-405c-b98c-a90bd4e95d49.jpg",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "id": "b4e213fc-c2d1-49b0-b858-7b9c9f13c00e",
+      "url": "/uploads/d499d53d-1faf-4344-b929-af197186366e.jpg",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "id": "da0c5888-3a53-4811-96bf-392491010202",
+      "url": "/uploads/e1cbb1b2-a024-4f37-aacf-8f5922908d76.jpg",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "id": "b069c308-36f5-4d11-83d5-4dca4a00b536",
+      "url": "/uploads/751a9a5b-f682-4085-913b-88ffc9839ba8.jpg",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "id": "aa3ed54a-c555-4d7e-bc05-236fd78b2670",
+      "url": "/uploads/642a5e6c-e577-42bf-ba93-cc62e7aeeacd.jpg",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "id": "a944d44f-4d49-4434-869d-0908090a861b",
+      "url": "/uploads/3d64a279-57c2-4df9-beea-e79e2d96a7b2.jpg",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "id": "681a22ce-84af-4b10-8840-32cd997e55cd",
+      "url": "/uploads/2582fab0-a40f-4c93-a616-28601175aed2.jpg",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "id": "eb188eff-d9d5-414c-8312-753269304ccf",
+      "url": "/uploads/87c716e2-9f7e-4751-b2b6-a9375f7f0d08.jpg",
+      "width": 800,
+      "height": 600
+    }
+  ],
+  "createdAt": "2026-01-24T16:02:09.055Z",
+  "updatedAt": "2026-01-24T16:02:09.055Z"
+}
