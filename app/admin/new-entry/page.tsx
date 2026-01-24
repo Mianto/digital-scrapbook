@@ -3,6 +3,7 @@
 import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import PhotoUpload from '@/components/PhotoUpload';
+import EntryPreview from '@/components/EntryPreview';
 import { Photo } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -10,6 +11,7 @@ export default function NewEntryPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showPreview, setShowPreview] = useState(false);
 
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [title, setTitle] = useState('');
@@ -147,6 +149,14 @@ export default function NewEntryPage() {
           {/* Actions */}
           <div className="flex gap-4">
             <button
+              type="button"
+              onClick={() => setShowPreview(true)}
+              disabled={photos.length === 0}
+              className="flex-1 bg-vintage-sepia text-vintage-dark py-3 rounded-lg font-medium hover:bg-vintage-brown hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Preview Entry
+            </button>
+            <button
               type="submit"
               disabled={loading || photos.length === 0}
               className="flex-1 bg-vintage-brown text-white py-3 rounded-lg font-medium hover:bg-vintage-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -163,6 +173,16 @@ export default function NewEntryPage() {
           </div>
         </form>
       </div>
+
+      {/* Preview Modal */}
+      <EntryPreview
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        title={title}
+        date={date}
+        description={description}
+        photos={photos}
+      />
     </main>
   );
 }

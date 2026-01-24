@@ -13,6 +13,7 @@ interface PhotoUploadProps {
 export default function PhotoUpload({ onPhotosChange }: PhotoUploadProps) {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
@@ -78,6 +79,30 @@ export default function PhotoUpload({ onPhotosChange }: PhotoUploadProps) {
     onPhotosChange(newPhotos);
   };
 
+  const movePhoto = (fromIndex: number, toIndex: number) => {
+    if (toIndex < 0 || toIndex >= photos.length) return;
+    const newPhotos = [...photos];
+    const [movedPhoto] = newPhotos.splice(fromIndex, 1);
+    newPhotos.splice(toIndex, 0, movedPhoto);
+    setPhotos(newPhotos);
+    onPhotosChange(newPhotos);
+  };
+
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === index) return;
+    movePhoto(draggedIndex, index);
+    setDraggedIndex(index);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+  };
+
   return (
     <div className="space-y-4">
       <div
@@ -110,14 +135,28 @@ export default function PhotoUpload({ onPhotosChange }: PhotoUploadProps) {
 
       {photos.length > 0 && (
         <div className="space-y-6">
-          <p className="text-sm text-vintage-brown font-medium">
-            {photos.length} photo{photos.length !== 1 ? 's' : ''} uploaded. Add captions below (optional):
-          </p>
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-vintage-brown font-medium">
+              {photos.length} photo{photos.length !== 1 ? 's' : ''} uploaded
+            </p>
+            <p className="text-xs text-vintage-sepia">
+              Drag photos to reorder • Add captions below (optional)
+            </p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {photos.map((photo, index) => (
-              <div key={photo.id} className="space-y-2">
-                <div className="relative group">
-                  <div className="relative aspect-square rounded-lg overflow-hidden bg-gray-100">
+              <div
+                key={photo.id}
+                draggable
+                onDragStart={() => handleDragStart(index)}
+                onDragOver={(e) => handleDragOver(e, index)}
+                onDragEnd={handleDragEnd}
+                className={`space-y-2 transition-opacity ${
+                  draggedIndex === index ? 'opacity-50' : 'opacity-100'
+                }`}
+              >
+                <div className="relative group cursor-move">
+                  <div className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 border-2 border-transparent group-hover:border-vintage-brown/30 transition-colors">
                     <Image
                       src={photo.url}
                       alt={photo.caption || `Photo ${index + 1}`}
@@ -125,16 +164,50 @@ export default function PhotoUpload({ onPhotosChange }: PhotoUploadProps) {
                       className="object-cover"
                     />
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => removePhoto(photo.id)}
-                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-lg"
-                    title="Remove photo"
-                  >
-                    ×
-                  </button>
+
+                  {/* Control buttons */}
+                  <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                      type="button"
+                      onClick={() => movePhoto(index, index - 1)}
+                      disabled={index === 0}
+                      className="bg-vintage-brown/90 text-white rounded-full w-7 h-7 flex items-center justify-center hover:bg-vintage-brown disabled:opacity-30 disabled:cursor-not-allowed shadow-lg"
+                      title="Move left"
+                    >
+                      ←
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => movePhoto(index, index + 1)}
+                      disabled={index === photos.length - 1}
+                      className="bg-vintage-brown/90 text-white rounded-full w-7 h-7 flex items-center justify-center hover:bg-vintage-brown disabled:opacity-30 disabled:cursor-not-allowed shadow-lg"
+                      title="Move right"
+                    >
+                      →
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => removePhoto(photo.id)}
+                      className="bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center hover:bg-red-600 shadow-lg"
+                      title="Remove photo"
+                    >
+                      ×
+                    </button>
+                  </div>
+
                   <div className="absolute bottom-2 left-2 bg-vintage-brown/80 text-white px-2 py-1 rounded text-xs font-medium">
                     Photo {index + 1}
+                  </div>
+
+                  {/* Drag handle indicator */}
+                  <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-60 transition-opacity">
+                    <svg
+                      className="w-6 h-6 text-white drop-shadow"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M9 3h2v2H9V3zm0 4h2v2H9V7zm0 4h2v2H9v-2zm0 4h2v2H9v-2zm0 4h2v2H9v-2zm4-16h2v2h-2V3zm0 4h2v2h-2V7zm0 4h2v2h-2v-2zm0 4h2v2h-2v-2zm0 4h2v2h-2v-2z" />
+                    </svg>
                   </div>
                 </div>
                 <div>
