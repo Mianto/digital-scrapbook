@@ -59,7 +59,7 @@ export default function PhotoUpload({ onPhotosChange }: PhotoUploadProps) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'image/*': ['.png', '.jpg', '.jpeg', '.heic', '.webp'],
+      'image/*': ['.png', '.jpg', '.jpeg', '.heic', '.heif', '.webp'],
     },
     multiple: true,
   });
@@ -91,7 +91,10 @@ export default function PhotoUpload({ onPhotosChange }: PhotoUploadProps) {
               Drag & drop photos here, or click to select
             </p>
             <p className="text-sm text-vintage-sepia">
-              Supports: JPG, PNG, HEIC, WebP
+              Supports: JPG, PNG, HEIC/HEIF (Apple Photos), WebP
+            </p>
+            <p className="text-xs text-vintage-sepia mt-1">
+              HEIC files will be automatically converted to JPEG
             </p>
           </div>
         )}
