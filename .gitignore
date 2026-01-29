@@ -18,12 +18,36 @@
 
 # misc
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 *.pem
+
+# IDE and editors
+.vscode/
+.idea/
+.fleet/
+.vs/
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+
+# Editor backup files
+*~
+*.swp
+*.swo
+*.bak
+*.tmp
 
 # debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
 # local env files
 .env*.local
