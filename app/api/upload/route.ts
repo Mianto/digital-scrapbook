@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
+import { put } from '@vercel/blob';
 import { v4 as uuidv4 } from 'uuid';
 import convert from 'heic-convert';
 
@@ -16,10 +15,6 @@ export async function POST(request: NextRequest) {
     // Get file extension
     const originalExt = file.name.split('.').pop()?.toLowerCase();
     const isHeic = originalExt === 'heic' || originalExt === 'heif';
-
-    // Ensure uploads directory exists
-    const uploadsDir = join(process.cwd(), 'public', 'uploads');
-    await mkdir(uploadsDir, { recursive: true });
 
     // Convert file to buffer
     const bytes = await file.arrayBuffer();
@@ -47,15 +42,15 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Generate filename and save
+    // Generate filename and upload to Vercel Blob
     const filename = `${uuidv4()}.${finalExt}`;
-    const filepath = join(uploadsDir, filename);
-    await writeFile(filepath, buffer);
-
-    const url = `/uploads/${filename}`;
+    const blob = await put(filename, buffer, {
+      access: 'public',
+      contentType: isHeic ? 'image/jpeg' : file.type,
+    });
 
     return NextResponse.json({
-      url,
+      url: blob.url,
       width: 800,
       height: 600,
     });

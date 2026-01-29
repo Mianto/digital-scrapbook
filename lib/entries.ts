@@ -1,6 +1,7 @@
 import { ScrapbookEntry } from '@/types';
 import fs from 'fs/promises';
 import path from 'path';
+import { del } from '@vercel/blob';
 
 const DATA_DIR = path.join(process.cwd(), 'data', 'entries');
 
@@ -58,12 +59,18 @@ export async function deleteEntry(date: string): Promise<void> {
       // Delete all associated photos
       const deletePhotoPromises = entry.photos.map(async (photo) => {
         try {
-          // Extract filename from URL (e.g., "/uploads/abc123.jpg" -> "abc123.jpg")
-          const filename = photo.url.split('/').pop();
-          if (filename) {
-            const photoPath = path.join(process.cwd(), 'public', 'uploads', filename);
-            await fs.unlink(photoPath);
-            console.log(`Deleted photo: ${filename}`);
+          // Check if it's a Vercel Blob URL (starts with https://)
+          if (photo.url.startsWith('https://')) {
+            await del(photo.url);
+            console.log(`Deleted blob: ${photo.url}`);
+          } else {
+            // Legacy local file support (for backwards compatibility)
+            const filename = photo.url.split('/').pop();
+            if (filename) {
+              const photoPath = path.join(process.cwd(), 'public', 'uploads', filename);
+              await fs.unlink(photoPath);
+              console.log(`Deleted local photo: ${filename}`);
+            }
           }
         } catch (photoError) {
           // Log but don't throw - continue deleting other photos
