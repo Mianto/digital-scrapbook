@@ -10,7 +10,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "jest --testPathIgnorePatterns=__tests__/api",
+    "test:all": "jest",
+    "test:watch": "jest --watch --testPathIgnorePatterns=__tests__/api",
+    "test:coverage": "jest --coverage --testPathIgnorePatterns=__tests__/api",
+    "test:ci": "jest --ci --coverage --maxWorkers=2 --testPathIgnorePatterns=__tests__/api",
+    "verify": "pnpm run lint && pnpm run test:ci && pnpm run build",
+    "pretest": "echo 'Running tests...'"
   },
   "dependencies": {
     "@vercel/blob": "^2.0.1",
@@ -24,6 +31,10 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.11.0",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
@@ -31,8 +42,11 @@
     "autoprefixer": "^10.4.0",
     "eslint": "^8.56.0",
     "eslint-config-next": "^14.2.0",
+    "jest": "^30.2.0",
+    "jest-environment-jsdom": "^30.2.0",
     "postcss": "^8.4.0",
     "tailwindcss": "^3.4.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.3.0"
   }
 }
