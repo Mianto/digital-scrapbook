@@ -30,14 +30,14 @@ Click **Deploy** and wait for build to complete (2-3 minutes).
 
 ### 3. Set Up Vercel Blob Storage
 
-**CRITICAL**: Photos won't work until you set this up.
+**CRITICAL**: App won't work until you set this up. All data (photos + entries) is stored in Blob.
 
 1. Go to your project dashboard in Vercel
 2. Click on **Storage** tab
 3. Click **Create Database**
 4. Select **Blob** storage
 5. Click **Continue**
-6. Name it: `digital-scrapbook-photos`
+6. Name it: `digital-scrapbook-storage`
 7. Click **Create**
 
 ### 4. Connect Blob Store to Project
@@ -73,13 +73,21 @@ This automatically adds `BLOB_READ_WRITE_TOKEN` environment variable.
 5. Verify photos upload and display correctly
 6. Check that entry appears on homepage
 
-## Vercel Blob Pricing (Free Tier)
+## Data Storage Architecture
+
+All data is stored in **Vercel Blob Storage**:
+
+- **Photos**: Stored as image blobs (JPEG, PNG, etc.)
+- **Entries**: Stored as JSON blobs under `entries/` prefix
+- **No local filesystem**: Everything is in the cloud
+
+### Vercel Blob Pricing (Free Tier)
 
 - **Storage**: 1 GB
 - **Bandwidth**: 100 GB/month
 - **Requests**: Unlimited
 
-Perfect for personal scrapbook use. You can store ~200-500 photos depending on size.
+Perfect for personal scrapbook use. You can store ~200-500 photos depending on size, plus all entry metadata.
 
 ## Environment Variables Summary
 

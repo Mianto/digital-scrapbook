@@ -1,20 +1,19 @@
 import { ScrapbookEntry } from '@/types';
-import fs from 'fs/promises';
-import path from 'path';
-import { del } from '@vercel/blob';
+import { list, put, del, head } from '@vercel/blob';
 
-const DATA_DIR = path.join(process.cwd(), 'data', 'entries');
+const ENTRY_PREFIX = 'entries/';
 
 export async function getAllEntries(): Promise<ScrapbookEntry[]> {
   try {
-    const files = await fs.readdir(DATA_DIR);
-    const jsonFiles = files.filter(file => file.endsWith('.json'));
+    // List all blobs with the entries prefix
+    const { blobs } = await list({ prefix: ENTRY_PREFIX });
 
+    // Fetch and parse each entry
     const entries = await Promise.all(
-      jsonFiles.map(async (file) => {
-        const filePath = path.join(DATA_DIR, file);
-        const content = await fs.readFile(filePath, 'utf-8');
-        return JSON.parse(content) as ScrapbookEntry;
+      blobs.map(async (blob) => {
+        const response = await fetch(blob.url);
+        const entry = await response.json() as ScrapbookEntry;
+        return entry;
       })
     );
 
@@ -28,9 +27,19 @@ export async function getAllEntries(): Promise<ScrapbookEntry[]> {
 
 export async function getEntryByDate(date: string): Promise<ScrapbookEntry | null> {
   try {
-    const filePath = path.join(DATA_DIR, `${date}.json`);
-    const content = await fs.readFile(filePath, 'utf-8');
-    return JSON.parse(content) as ScrapbookEntry;
+    const pathname = `${ENTRY_PREFIX}${date}.json`;
+
+    // Check if entry exists
+    const blob = await head(pathname);
+
+    if (!blob) {
+      return null;
+    }
+
+    // Fetch and parse the entry
+    const response = await fetch(blob.url);
+    const entry = await response.json() as ScrapbookEntry;
+    return entry;
   } catch (error) {
     console.error(`Error reading entry for date ${date}:`, error);
     return null;
@@ -39,11 +48,15 @@ export async function getEntryByDate(date: string): Promise<ScrapbookEntry | nul
 
 export async function createEntry(entry: ScrapbookEntry): Promise<void> {
   try {
-    // Ensure data directory exists
-    await fs.mkdir(DATA_DIR, { recursive: true });
+    const pathname = `${ENTRY_PREFIX}${entry.date}.json`;
+    const content = JSON.stringify(entry, null, 2);
 
-    const filePath = path.join(DATA_DIR, `${entry.date}.json`);
-    await fs.writeFile(filePath, JSON.stringify(entry, null, 2), 'utf-8');
+    await put(pathname, content, {
+      access: 'public',
+      contentType: 'application/json',
+    });
+
+    console.log(`Created entry: ${pathname}`);
   } catch (error) {
     console.error('Error creating entry:', error);
     throw error;
@@ -63,14 +76,6 @@ export async function deleteEntry(date: string): Promise<void> {
           if (photo.url.startsWith('https://')) {
             await del(photo.url);
             console.log(`Deleted blob: ${photo.url}`);
-          } else {
-            // Legacy local file support (for backwards compatibility)
-            const filename = photo.url.split('/').pop();
-            if (filename) {
-              const photoPath = path.join(process.cwd(), 'public', 'uploads', filename);
-              await fs.unlink(photoPath);
-              console.log(`Deleted local photo: ${filename}`);
-            }
           }
         } catch (photoError) {
           // Log but don't throw - continue deleting other photos
@@ -82,10 +87,10 @@ export async function deleteEntry(date: string): Promise<void> {
       await Promise.allSettled(deletePhotoPromises);
     }
 
-    // Delete the entry JSON file
-    const filePath = path.join(DATA_DIR, `${date}.json`);
-    await fs.unlink(filePath);
-    console.log(`Deleted entry: ${date}.json`);
+    // Delete the entry JSON blob
+    const pathname = `${ENTRY_PREFIX}${date}.json`;
+    await del(pathname);
+    console.log(`Deleted entry: ${pathname}`);
   } catch (error) {
     console.error(`Error deleting entry for date ${date}:`, error);
     throw error;
