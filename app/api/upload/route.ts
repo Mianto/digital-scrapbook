@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { put } from '@vercel/blob';
+import { getStorageAdapter } from '@/lib/storage';
 import { v4 as uuidv4 } from 'uuid';
 import convert from 'heic-convert';
 
@@ -20,6 +20,7 @@ export async function POST(request: NextRequest) {
     const bytes = await file.arrayBuffer();
     let buffer = Buffer.from(bytes);
     let finalExt = originalExt;
+    let contentType = file.type;
 
     // Convert HEIC to JPEG
     if (isHeic) {
@@ -32,6 +33,7 @@ export async function POST(request: NextRequest) {
         });
         buffer = Buffer.from(outputBuffer);
         finalExt = 'jpg';
+        contentType = 'image/jpeg';
         console.log('HEIC conversion successful');
       } catch (conversionError) {
         console.error('HEIC conversion failed:', conversionError);
@@ -42,15 +44,13 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Generate filename and upload to Vercel Blob
+    // Generate filename and upload using storage adapter
     const filename = `${uuidv4()}.${finalExt}`;
-    const blob = await put(filename, buffer, {
-      access: 'public',
-      contentType: isHeic ? 'image/jpeg' : file.type,
-    });
+    const storage = getStorageAdapter();
+    const url = await storage.uploadPhoto(buffer, filename, contentType);
 
     return NextResponse.json({
-      url: blob.url,
+      url,
       width: 800,
       height: 600,
     });
